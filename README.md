@@ -30,7 +30,7 @@
   - [Make Code change](#hammer_and_wrench-make-code-change)
   - [Create SG](#package-create-sg)
     - [Windows server](#package-windows-server)
-    - [Tomcat and backend servers](#package-tomcat-&-backend-servers)
+    - [Tomcat and backend servers](#package-tomcat-and-backend-servers)
   - [Setup tomcat and backend server on ec2 with user data](#package-setup-tomcat-and-backend-server-on-ec2-with-user-data)
   - [Create Jenkins Job to Run Ansible Playbook](#package-create-jenkins-job-to-run-ansible-playbook)
   - [Create Jenkins Job to Deploy artifact to Staging using Ansible](#package-create-jenkins-job-to-deploy-artifact-to-staging-using-ansible)
