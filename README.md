@@ -269,6 +269,7 @@ Allow: RDP from MYIP
 Allow: all traffic from vprofile-jenkins-sg
 
    ```
+   
 - On your console under `EC2`-> `security group` click `create security group`.
 - Create a security group for `Backend services` with the following details.
 
