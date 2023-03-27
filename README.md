@@ -225,10 +225,12 @@
 ### :package: Create SG
 
 - Create two security group for the Windows server and Tomcat and backend servers
+
+
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
-</div>
+</di1v>
 <br/>
 
 #### :package: Windows server
