@@ -392,6 +392,68 @@ systemctl restart rabbitmq-server
 
 ### :package: Create Jenkins Job to Run Ansible Playbook
 
+- `SSH` into your jenkins ubuntu machine and install ansible usign the the command below.
+
+```sh
+sudo apt update
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt install ansible
+   ```
+   
+
+- Get your jenkins public ip from the jenkins instance running on your AWS console.
+- Open your browser and enter `jenkins public IP` on your url. Login into your Jenkins server using your credential. 
+- On your jenkins goto `Manage jenkins`-> `manage plugins` and install a plugin called `ansible`
+- After installing the plugin, create a job by going to `New Item` and use the following detals.
+
+
+```sh
+Item name: Deploy-To-Staging
+Scroll down and copy it from Build Job that was created earlier.
+Change the branch to cd-ansible-jenkins 
+   ```
+- RUN this job. After running the job, open the job and goto `configure` and macke the following changes to the job.
+
+
+```sh
+Add Build step: invoke ansible playbook
+Playbook path: ansible/site.yml
+
+inventory content: app01-staging ansible_host =<private IP of tomcat server on aws>
+[appsrvgrp]
+app01-staging 
+
+Add credentials: 
+kind=username with privatwe key
+ID= app-staging-ssh-login
+username: ubuntu
+Key: copy the private of ci-vprofile-key and paste it
+
+Add extra vaiables:
+key:USER
+value:admin
+key:PASS
+value:admin123
+key:nexusip
+value: <private ip of nexus server on aws>
+key:reponame
+value:vprofile-release
+key:groupid
+value: QA
+key:time
+value:$TIME
+key:BUILD
+value:$ID
+key:vprofile_version
+value:$TIME-$DI.var
+On you jenkins configure, scroll up and sellect this project is parametarize.
+Add parameter: 
+Name: TIME
+Name: ID
+save the changes
+   ```
+   
+   
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -399,7 +461,144 @@ systemctl restart rabbitmq-server
 <br/>
 
 ### :package: Create Jenkins Job to Deploy artifact to Staging using Ansible
+- On your Jenkins open the `Deploy-to-nexus` job click on `configure` and make the following changes.
 
+
+```sh
+Scroll down to Build
+Under nexus details, change the:
+version to $BUIL_IB
+Artifactid to $BUILD_TIMESTAMP 
+   ```
+- Edit `vprofile-nexus-sg` security group to allow port 8081 from vprofile-app-staging-sg security group-
+- Save and RUN the `Deploy-to-nexus` job
+- After that RUN the ` Deploy-To-Staging` job. Provide the TIME and ID parameters, these parameters are found on the release artifact on the nexus repository.
+
+- We have to change the branch of the jenkins project the we created earlier in our continoue intergrateion project.
+
+- On your Jenkins open the `Build` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to Source Code Management
+Branch Specifier: */cd-ansible-jenkins
+   ```
+
+- On your Jenkins open the `Code Analysis` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to Source Code Management
+Branch Specifier: */cd-ansible-jenkins
+   ```
+
+- On your Jenkins open the `Integration Test` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to Source Code Management
+Branch Specifier: */cd-ansible-jenkins
+   ```
+   
+- On your Jenkins open the `Test` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to Source Code Management
+Branch Specifier: */cd-ansible-jenkins
+   ```
+
+- On your Jenkins open the `SonarScanner-CoddAnalysis` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to Source Code Management
+Branch Specifier: */cd-ansible-jenkins
+   ```
+
+
+- On your Jenkins open the `Build` job click on `configure` and make the following changes.This script will update our application.properties file to connect to our database
+
+- Rplace db01 on the script below with the private ip of your database on AWS 
+- 
+```sh
+Scroll down to Build
+execute shell: copy and paste the cript below.
+
+cat << EOT > src/main/resouces/application.properties
+
+#JDBC Configutation for Database Connection
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://db01:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+jdbc.username=admin
+jdbc.password=admin123
+
+#Memcached Configuration For Active and StandBy Host
+#For Active Host
+memcached.active.host=mc01
+memcached.active.port=11211
+#For StandBy Host
+memcached.standBy.host=127.0.0.2
+memcached.standBy.port=11211
+
+#RabbitMq Configuration
+rabbitmq.address=rmq01
+rabbitmq.port=5672
+rabbitmq.username=test
+rabbitmq.password=test
+
+#Elasticesearch Configuration
+elasticsearch.host =192.168.1.85
+elasticsearch.port =9300
+elasticsearch.cluster=vprofile
+elasticsearch.node=vprofilenode
+EOT
+
+   ```
+   
+
+- On your Jenkins open the `Codd Analysis` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to post build action
+report violation
+checkstyle  ncrease it to 10, 1000, 100
+   ```
+   
+
+- Login into your sonarqube server through the browser using the public IP of your sonarqube server. Set the `quality gates` to 1000
+
+
+- On your Jenkins open the `Deploy-to-Nexus` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to post build action
+Add post buil action
+select trigger parameterze build on other projects 
+project to build : Deploy-To-Staging-Ansible 
+Add parameters 
+TIME= $BUILD_TIMEstamp
+ID=$BUILD_ID
+SAVE CHANGES
+   ```
+   
+- Create a new view and called it vprofile-continous-delivery click pipeline view then  ok
+
+- On edit view enter the following details 
+
+```sh
+initial job: Build 
+click ok
+   ```
+   
+- Now RUN your new view pipeline 
+
+- Check whether the deployment completed successfully by copying the public IP of our application server on aws and pasting it on your url.
+- 
+- Also login and try testing your database 
+   
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
