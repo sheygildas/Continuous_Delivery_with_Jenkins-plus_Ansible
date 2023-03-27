@@ -219,7 +219,7 @@
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
-</di1v>
+</div>
 <br/>
 
 ### :package: Create SG
@@ -320,6 +320,8 @@ KeyPair: ci-vprofile-key
    ```
    
 - Use the script below as userdata to launch our backend services
+
+
 ```sh
 #!/bin/bash
 DATABASE_PASS='admin123'
