@@ -607,6 +607,73 @@ click ok
 
 ### :package: Add windows node as slave to Jenkins
 
+- Let's launch our windows server instance 
+- On your console under EC2->Instances click launch instances.
+- We will create Jenkins-server with below details.
+
+```sh
+Name: Windows-server
+AMI:   server 2019 base
+SecGrp: Windows-Server-SofTest
+InstanceType: t2.small
+Userdata: use the userdata given below
+KeyPair: ci-vprofile-key
+
+   ```
+   
+```sh
+<powershell>
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+choco install jdk8 -y 
+choco install maven -y 
+choco install googlechrome -y
+choco install git -y
+mkdir C:\jenkins
+</powershell>
+
+   ```
+   
+- Add a rule to jenkins secuirty group to allow all from windows server security group
+- On the AWS console. select your Windows server then click `connect` -> `RDP Client`- > `Get password`. Now upload your private key of ci-vprofile-key
+- Click on decrypt password to get your password.
+- Now RDP into your intances using th public IP of the windows server. Enter your credentials to login into the server 
+
+- Open your browser and enter `jenkins public IP` on your url. Login into your Jenkins server using your credential. 
+- On your jenkins goto `Manage jenkins`-> `configure system` and give the details below
+
+
+```sh
+Jenkins URL: http://<JNKINS PRIVATE IP>/8080/
+Save changes
+   ```
+   
+- On your jenkins goto `Manage jenkins`-> `Manage Nodes and Clouds` and give the details below
+
+
+```sh
+Name: vprofile-softwareTest
+select parmanent agent 
+click ok
+Remote root directory: c/jenkins
+launch method: launch agent by connecting it to the master 
+custom work directory: c/jenkins
+select use socket 
+Save changes
+   ```
+
+- On your jenkins goto `Manage jenkins`-> `configure global security` and give the details below
+
+
+```sh
+scroll down to Agent
+TCP port for inbound agent: select fixed and enter 8090
+Save changes
+   ```
+   
+- On your jenkins goto `Manage jenkins`-> `Manage Nodes and Clouds` and copy the `run agent from command line` command and goto your CMD  ns run the command.
+- Now our windows server is connected as a slave.
+
+   
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -615,6 +682,38 @@ click ok
 
 ### :package: Create Job to run Software Tests with Selenium from Windows server
 
+- On your jenkins goto `New Item` create a job and give the details below
+
+```sh
+Item name: Software-Testing
+Under general, select retrict where this project can run the put vprofile_softwareTest-Node
+Scroll down and copy it from Build Job that was created earlier.
+Change the branch to */seleniumAutoScripts 
+Revove the execute shell script
+Remove the archive artifact 
+remove build other project 
+Invoke top level maven target 
+Goals: clean, test -Dsurefir.suiteXmlFiles=testing.xml -Durl=http://<public IP of app01>:8080/login -Dusr=admin_vp -Dpass=admin_vp -DsShotPath=C:\\jenkins\\screnshots
+Save changes
+   ```
+- RUN the job. This job will automatically login to our windows server, take the screenshot of the login page of our app and store it in jenkins server windows server as well .
+
+
+
+- On your Jenkins open the `Deploy-To-Staging-Ansible` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to post build action
+Add post buil action
+select trigger parameterze build on other projects 
+project to build : Sotfware-Testing  
+Add parameters 
+TIME= $TIME
+ID=$ID
+SAVE CHANGES
+   ```
+   
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
