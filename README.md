@@ -722,6 +722,32 @@ SAVE CHANGES
 
 ### :package: Deploy artifact to Production tomcat server using Ansible
 
+- On your console under EC2->Instances click launch instances.
+- We will create `production` server with below details.
+
+
+```sh
+Name:   Production server
+AMI: Ubuntu 20.04
+SecGrp: vprofile-app-staging-sg
+InstanceType: t2.small
+Tga: app01-staging-vprofile
+KeyPair: ci-vprofile-key
+
+   ```
+- On your jenkins goto `New Item` create a job and give the details below
+
+```sh
+Item name: Deploy-To-Prod-ansible
+Scroll down and copy it from Deploy-To-Staging-Ansible Job that was created earlier.
+Change the inventory content: app01-staging ansible_host =<private IP of production server on aws>
+[appsrvgrp]
+app01-Prod 
+Remove trigger parameterze build on other projects 
+Remove project to build : Sotfware-Testing  
+Save changes
+   ```
+
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -730,6 +756,21 @@ SAVE CHANGES
 
 ### :package: Connect all the jobs with Build Pipeline
 
+
+- On your Jenkins open the `Sotfware-Testing` job click on `configure` and make the following changes.
+
+
+```sh
+Scroll down to post build action
+Add post buil action
+select trigger parameterze build on other projects 
+project to build : Deploy-To-Prod-Ansible 
+Add parameters 
+TIME= $BUILD_TIMEstamp
+ID=$BUILD_ID
+SAVE CHANGES
+   ```
+
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -737,7 +778,8 @@ SAVE CHANGES
 <br/>
 
 ### :package: Test it by committing code to github
-
+- Make some cose changes on your ReadMe.md file commit it to github and watch the pipeline get triggered automatically 
+- 
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
