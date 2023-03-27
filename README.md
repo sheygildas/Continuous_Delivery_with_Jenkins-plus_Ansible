@@ -223,7 +223,7 @@
 <br/>
 
 ### :package: Create SG
-
+- Create two security group for the Windows server and Tomcat and backend servers
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -232,6 +232,17 @@
 
 #### :package: Windows server
 
+- On your console under `EC2`-> `security group` click `create security group`.
+- Create a security group for the `Windows server` with the following details.
+
+```sh
+Name: Windows-Server-SofTest
+Description: Windows-Server-SofTest
+Tag: Windows-Server-SofTest
+Allow: RDP from MYIP
+Allow: all traffic from vprofile-jenkins-sg
+
+   ```
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -239,6 +250,33 @@
 <br/>
 
 #### :package: Tomcat and backend servers
+
+- On your console under `EC2`-> `security group` click `create security group`.
+- Create a security group for `Tomcat` with the following details.
+
+```sh
+Name: vprofile-app-staging-sg
+Description: vprofile-app-staging-sg
+Tag: vprofile-app-staging-sg
+Allow: 8080 from MY IP 
+Allow: port 22 from Anywhere from MY IP
+Allow: port 22 from vprofile-jenkins-sg
+Allow: 8080 from Windows-Server-SofTest
+Allow: RDP from MYIP
+Allow: all traffic from vprofile-jenkins-sg
+
+   ```
+- On your console under `EC2`-> `security group` click `create security group`.
+- Create a security group for `Backend services` with the following details.
+
+```sh
+Name: vprofile-be-staging-sg
+Description: vprofile-be-staging-sg
+Tag: vprofile-be-staging-sg
+Allow: all traffic from vprofile-app-staging-sg
+Allow: port 22 from MY IP 
+
+   ```
 
 <br/>
 <div align="right">
