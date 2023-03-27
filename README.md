@@ -223,6 +223,7 @@
 <br/>
 
 ### :package: Create SG
+
 - Create two security group for the Windows server and Tomcat and backend servers
 <br/>
 <div align="right">
