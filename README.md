@@ -113,6 +113,7 @@
 
 ### :closed_lock_with_key: Create Key Pairs
 
+
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
@@ -230,7 +231,7 @@
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
-</di1v>
+</div>
 <br/>
 
 #### :package: Windows server
@@ -246,6 +247,8 @@ Allow: RDP from MYIP
 Allow: all traffic from vprofile-jenkins-sg
 
    ```
+
+
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
