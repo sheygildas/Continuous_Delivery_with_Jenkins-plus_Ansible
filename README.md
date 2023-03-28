@@ -474,7 +474,7 @@ Artifactid to $BUILD_TIMESTAMP
 - Save and RUN the `Deploy-to-nexus` job
 - After that RUN the ` Deploy-To-Staging` job. Provide the TIME and ID parameters, these parameters are found on the release artifact on the nexus repository.
 
-- We have to change the branch of the jenkins project the we created earlier in our continoue intergrateion project.
+- We have to change the branch of the jenkins project the we created earlier in our continuoue intergrateion project.
 
 - On your Jenkins open the `Build` job click on `configure` and make the following changes.
 
@@ -584,7 +584,7 @@ ID=$BUILD_ID
 SAVE CHANGES
    ```
    
-- Create a new view and called it vprofile-continous-delivery click pipeline view then  ok
+- Create a new view and called it vprofile-continuous-delivery click pipeline view then  ok
 
 - On edit view enter the following details 
 
