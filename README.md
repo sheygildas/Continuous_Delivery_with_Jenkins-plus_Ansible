@@ -758,7 +758,7 @@ Save changes
 
 ### :package: Connect all the jobs with Build Pipeline
 
-
+- Connect job to the pipeline 
 - On your Jenkins open the `Sotfware-Testing` job click on `configure` and make the following changes.
 
 
@@ -773,6 +773,7 @@ ID=$BUILD_ID
 SAVE CHANGES
    ```
 
+- Run the job, now sign into your nexus server you will see the production artifact ready 
 <br/>
 <div align="right">
     <b><a href="#Project-12">↥ back to top</a></b>
