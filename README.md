@@ -609,7 +609,7 @@ click ok
 
 - Let's launch our windows server instance 
 - On your console under EC2->Instances click launch instances.
-- We will create Jenkins-server with below details.
+- We will create Windows-server with below details.
 
 ```sh
 Name: Windows-server
@@ -633,16 +633,17 @@ mkdir C:\jenkins
 
    ```
    
-- Add a rule to jenkins secuirty group to allow all from windows server security group
+- Add a rule to jenkins secuirty group to allow all traffic from windows server security group
 - On the AWS console. select your Windows server then click `connect` -> `RDP Client`- > `Get password`. Now upload your private key of ci-vprofile-key
-- Click on decrypt password to get your password.
+- Click on decrypt password to get your password. Store the password and the public IP of your windows instance
 - Now RDP into your intances using th public IP of the windows server. Enter your credentials to login into the server 
 
-- Open your browser and enter `jenkins public IP` on your url. Login into your Jenkins server using your credential. 
+- Open the browser on your windows server and enter `jenkins public IP` on your url  on port 8080. Login into your Jenkins server using your credential. 
 - On your jenkins goto `Manage jenkins`-> `configure system` and give the details below
 
 
 ```sh
+Scroll down to Jenkins location
 Jenkins URL: http://<JNKINS PRIVATE IP>/8080/
 Save changes
    ```
@@ -651,10 +652,11 @@ Save changes
 
 
 ```sh
+Clic add new node
 Name: vprofile-softwareTest
 select parmanent agent 
 click ok
-Remote root directory: c/jenkins
+Remote root directory: c/jenkins (please create this directory on your windows server c drive before adding it here)
 launch method: launch agent by connecting it to the master 
 custom work directory: c/jenkins
 select use socket 
@@ -670,7 +672,7 @@ TCP port for inbound agent: select fixed and enter 8090
 Save changes
    ```
    
-- On your jenkins goto `Manage jenkins`-> `Manage Nodes and Clouds` and copy the `run agent from command line` command and goto your CMD  ns run the command.
+- On your jenkins goto `Manage jenkins`-> `Manage Nodes and Clouds` and copy the entire `run agent from command line .....` command and goto your CMD  and run the command.
 - Now our windows server is connected as a slave.
 
    
@@ -696,7 +698,7 @@ Invoke top level maven target
 Goals: clean, test -Dsurefir.suiteXmlFiles=testing.xml -Durl=http://<public IP of app01>:8080/login -Dusr=admin_vp -Dpass=admin_vp -DsShotPath=C:\\jenkins\\screnshots
 Save changes
    ```
-- RUN the job. This job will automatically login to our windows server, take the screenshot of the login page of our app and store it in jenkins server windows server as well .
+- RUN the job. This job will automatically login to our windows server, take the screenshot of the login page of our app and store it in jenkins server and windows server as well .
 
 
 
