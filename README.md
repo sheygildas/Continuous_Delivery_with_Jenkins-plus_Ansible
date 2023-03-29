@@ -519,7 +519,7 @@ Branch Specifier: */cd-ansible-jenkins
 
 - On your Jenkins open the `Build` job click on `configure` and make the following changes.This script will update our application.properties file to connect to our database
 
-- Rplace db01 on the script below with the private ip of your database on AWS 
+- Replace db01, mc01 and rmq01 in the script below with the private ip of your backend server on AWS 
 - 
 ```sh
 Scroll down to Build
